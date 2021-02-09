@@ -29,6 +29,9 @@ async def img_sampler(message: Message):
         if not str(lim).isdigit():
             await message.err('"-l" Flag only takes integers', del_in=5)
             return
+        if lim > 15:
+            await message.err('limit can't be more than 15', del_in=5)
+            return
     else:
         lim = int(3)
     response = googleimagesdownload()
@@ -46,9 +49,19 @@ async def img_sampler(message: Message):
         return await message.edit(f"Error: \n`{e}`")
     img = paths[0][query]
     media = []
+    repeat = 0
+    last = 0
     for a in img:
         media.append(InputMediaPhoto(media=a, caption=query))
-    if media:
-        await message.client.send_media_group(message.chat.id, media)
+        repeat += 1
+        last += 1
+        if repeat == 10:
+            if media:
+                await message.client.send_media_group(message.chat.id, media)
+            repeat = 0
+            media = []
+        if last == lim:
+            if media:
+                await message.client.send_media_group(message.chat.id, media)
     shutil.rmtree(os.path.dirname(os.path.abspath(img[0])))
     await message.delete()
