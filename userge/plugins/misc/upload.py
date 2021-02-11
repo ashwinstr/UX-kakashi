@@ -22,7 +22,7 @@ from userge.utils.exceptions import ProcessCanceled
 LOGGER = userge.getLogger(__name__)
 CHANNEL = userge.getCLogger(__name__)
 
-LOGO_PATH = "resources/logo_x.png"
+LOGO_PATH = "resources/kakashi.jpg"
 
 
 @userge.on_cmd(
