@@ -1,35 +1,37 @@
 # credits: mrconfused
-# imported by AshSTR
+# imported by AshSTR/ashwinstr
 
 import asyncio
 
 from pyrogram import filters
 from pyrogram.errors import FloodWait
 
-from userge import Config, userge
+from userge import Config, Message, userge
 
 allow_gp_logger = filters.create(lambda _, __, ___: Config.PM_LOG_GROUP_ID)
 
 
 @userge.on_message(
     allow_gp_logger & filters.incoming & filters.group & ~filters.me & ~filters.bot,
-    group=2,
 )
 async def gp_lgger(_, message: Message):
-    try:
-        await userge.send_message(
-            Config.PM_LOG_GROUP_ID,
-            (
-                f"#TAGS \nSent by : {message.from_user.mention}"
-                f"\nGroup :</b> <code>{message.chat.title}</code>"
-                f"\n<b>Message :</b> <a href={message.link}>link</a>",
-            ),
-            parse_mode="html",
-        )
-        await message.forward(Config.PM_LOG_GROUP_ID, disable_notification=True)
-        await asyncio.sleep(0.5)
-    except FloodWait as e:
-        await asyncio.sleep(e.x + 3)
+    me = await userge.get_me()
+    replied = message.reply_to_message
+    if replied.from_user.id == me.id or (("@" + me.username) in replied.text):
+        try:
+            await userge.send_message(
+                Config.PM_LOG_GROUP_ID,
+                (
+                    f"#TAGS <br>Sent by : {message.from_user.mention}"
+                    f"<br>Group :</b> <code>{message.chat.title}</code>"
+                    f"<br><b>Message :</b> <a href={message.link}>link</a>",
+                ),
+                parse_mode="html",
+            )
+            await asyncio.sleep(5)
+            await message.forward(Config.PM_LOG_GROUP_ID, disable_notification=True)
+        except FloodWait as e:
+            await asyncio.sleep(e.x + 3)
 
 
 @userge.on_message()

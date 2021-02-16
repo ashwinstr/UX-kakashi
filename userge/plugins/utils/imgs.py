@@ -3,6 +3,7 @@
 import os
 import shutil
 
+from pyrogram.errors import ImageProcessFailed
 from pyrogram.types import InputMediaPhoto
 
 from userge import Message, userge
@@ -29,8 +30,9 @@ async def img_sampler(message: Message):
         if not str(lim).isdigit():
             await message.err('"-l" Flag only takes integers', del_in=5)
             return
-        if lim > 15:
-            await message.err('limit can't be more than 15', del_in=5)
+        lim = lim.replace("-l", "")
+        if int(lim) > 10:
+            await message.err("Limit can't be more than 10 as of now.", del_in=5)
             return
     else:
         lim = int(3)
@@ -50,18 +52,16 @@ async def img_sampler(message: Message):
     img = paths[0][query]
     media = []
     repeat = 0
-    last = 0
+    last = 1
     for a in img:
         media.append(InputMediaPhoto(media=a, caption=query))
         repeat += 1
-        last += 1
-        if repeat == 10:
+        if repeat == (10 * last) or repeat == int(lim):
             if media:
-                await message.client.send_media_group(message.chat.id, media)
-            repeat = 0
+                try:
+                    await message.client.send_media_group(message.chat.id, media)
+                except ImageProcessFailed:
+                    pass
             media = []
-        if last == lim:
-            if media:
-                await message.client.send_media_group(message.chat.id, media)
     shutil.rmtree(os.path.dirname(os.path.abspath(img[0])))
     await message.delete()
