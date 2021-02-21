@@ -55,6 +55,7 @@ _checkDefaultVars() {
         [UPSTREAM_REMOTE]="upstream"
         [UPSTREAM_REPO]="https://github.com/code-rgb/USERGE-X"
         [LOAD_UNOFFICIAL_PLUGINS]=true
+        [CUSTOM_PLUGINS_REPO]=""
         [G_DRIVE_IS_TD]=true
         [CMD_TRIGGER]="."
         [SUDO_TRIGGER]="!"
@@ -164,6 +165,47 @@ _checkUpstreamRepo() {
     deleteLastMessage
 }
 
+<<<<<<< HEAD
+=======
+_setupPlugins() {
+    local link path tmp
+    editLastMessage "Checking $1 Plugins ..."
+    if test $(grep -P '^'$2'$' <<< $3); then
+        editLastMessage "\tLoading $1 Plugins ..."
+        replyLastMessage "\t\tClonning ..."
+        link=$(test $4 && echo $4 || echo $3)
+        tmp=Temp-Plugins
+        gitClone --depth=1 $link $tmp
+        editLastMessage "\t\tUpgrading PIP ..."
+        upgradePip
+        editLastMessage "\t\tInstalling Requirements ..."
+        installReq $tmp
+        editLastMessage "\t\tCleaning ..."
+        path=$(tr "[:upper:]" "[:lower:]" <<< $1)
+        rm -rf userge/plugins/$path/
+        mv $tmp/plugins/ userge/plugins/$path/
+        cp -r $tmp/resources/. resources/
+        rm -rf $tmp/
+        deleteLastMessage
+        editLastMessage "\t$1 Plugins Loaded Successfully !"
+    else
+        editLastMessage "\t$1 Plugins Disabled !"
+    fi
+}
+
+_checkUnoffPlugins() {
+    _setupPlugins Xtra true $LOAD_UNOFFICIAL_PLUGINS https://github.com/code-rgb/Userge-Plugins.git
+}
+
+_checkCustomPlugins() {
+    _setupPlugins Custom "https://([0-9a-f]{40}@)?github.com/.+/.+" $CUSTOM_PLUGINS_REPO
+}
+
+_flushMessages() {
+    deleteLastMessage
+}
+
+>>>>>>> 678c5275ad79ef42b00a902803afb2d8e9156459
 assertPrerequisites() {
     _checkBashReq
     _checkPythonVersion
@@ -180,4 +222,6 @@ assertEnvironment() {
     _checkGit
     _checkUpstreamRepo
     _checkUnoffPlugins
+    _checkCustomPlugins
+    _flushMessages
 }
