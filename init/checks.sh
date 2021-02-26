@@ -165,6 +165,44 @@ _checkUpstreamRepo() {
     deleteLastMessage
 }
 
+_setupPlugins() {
+    local link path tmp
+    editLastMessage "Checking $1 Plugins ..."
+    if test $(grep -P '^'$2'$' <<< $3); then
+        editLastMessage "\tLoading $1 Plugins ..."
+        replyLastMessage "\t\tClonning ..."
+        link=$(test $4 && echo $4 || echo $3)
+        tmp=Temp-Plugins
+        gitClone --depth=1 $link $tmp
+        editLastMessage "\t\tUpgrading PIP ..."
+        upgradePip
+        editLastMessage "\t\tInstalling Requirements ..."
+        installReq $tmp
+        editLastMessage "\t\tCleaning ..."
+        path=$(tr "[:upper:]" "[:lower:]" <<< $1)
+        rm -rf userge/plugins/$path/
+        mv $tmp/plugins/ userge/plugins/$path/
+        cp -r $tmp/resources/. resources/
+        rm -rf $tmp/
+        deleteLastMessage
+        editLastMessage "\t$1 Plugins Loaded Successfully !"
+    else
+        editLastMessage "\t$1 Plugins Disabled !"
+    fi
+}
+
+_checkUnoffPlugins() {
+    _setupPlugins Xtra true $LOAD_UNOFFICIAL_PLUGINS https://github.com/code-rgb/Userge-Plugins.git
+}
+
+_checkCustomPlugins() {
+    _setupPlugins Custom "https://([0-9a-f]{40}@)?github.com/.+/.+" $CUSTOM_PLUGINS_REPO
+}
+
+_flushMessages() {
+    deleteLastMessage
+}
+
 assertPrerequisites() {
     _checkBashReq
     _checkPythonVersion
