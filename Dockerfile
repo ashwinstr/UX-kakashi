@@ -8,13 +8,8 @@ RUN sed -i.bak 's/us-west-2\.ec2\.//' /etc/apt/sources.list
 
 WORKDIR /app/
 
-<<<<<<< HEAD
-RUN apt -qq update
-RUN apt -qq install -y --no-install-recommends \
-=======
 RUN apt -qq update && apt -qq upgrade -y && \
     apt -qq install -y --no-install-recommends \
->>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
     apt-utils \
     curl \
     git \
@@ -55,12 +50,9 @@ RUN pip install -U setuptools setuptools-scm wheel && \
 
 COPY . .
 
-<<<<<<< HEAD
 # adding email and username to the bot
 RUN git config --global user.email "ashwinstr@gmail.com"
 RUN git config --global user.name "ashwinstr"
 
 # command to run on container start
-=======
->>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
 CMD [ "bash", "./run" ]
