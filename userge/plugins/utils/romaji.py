@@ -1,6 +1,6 @@
-## Creator @midnightmadwalk to be found on tg
-## on github as https://github.com/iMBadBoi
-## i just improvised it a lil'...phew..
+# Creator @midnightmadwalk to be found on tg
+# on github as https://github.com/iMBadBoi
+# i just improvised it a lil'...phew..
 
 from google_trans_new import google_translator
 
@@ -30,7 +30,7 @@ async def romaji_(message: Message):
         y = x.split("\n")
         result = translator.translate(y, lang_src=z, lang_tgt="en", pronounce=True)
         k = result[1]
-        if k == None:
+        if k is None:
             result = translator.translate(
                 y, lang_src="en", lang_tgt="ja", pronounce=True
             )

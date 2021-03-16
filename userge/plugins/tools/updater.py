@@ -55,8 +55,8 @@ async def check_update(message: Message):
         if not Config.HEROKU_APP:
             await message.err("HEROKU APP : could not be found !")
             return
-       # push_to_heroku = True
-       # flags.remove("push")
+    # push_to_heroku = True
+    # flags.remove("push")
     if "pr" in flags:
         branch = "master"
         out = _get_updates_pr(git_u_n, branch)
