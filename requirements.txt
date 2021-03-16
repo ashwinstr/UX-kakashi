@@ -14,11 +14,7 @@ google_trans_new
 hachoir>=3.1.1
 heroku3>=4.2.3
 html-telegraph-poster>=0.2.31
-<<<<<<< HEAD
-instaloader>=4.5.5
 lyricsgenius>=2.0.2
-=======
->>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
 motor>=2.3.0
 oauth2client>=4.1.3
 Pillow==8.1.2
