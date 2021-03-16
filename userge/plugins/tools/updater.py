@@ -55,9 +55,8 @@ async def check_update(message: Message):
         if not Config.HEROKU_APP:
             await message.err("HEROKU APP : could not be found !")
             return
-<<<<<<< HEAD
-        push_to_heroku = True
-        flags.remove("push")
+       # push_to_heroku = True
+       # flags.remove("push")
     if "pr" in flags:
         branch = "master"
         out = _get_updates_pr(git_u_n, branch)
@@ -65,10 +64,6 @@ async def check_update(message: Message):
         await message.edit("Updating <b><u>Userge-Plugins</u></b>...", log=__name__)
         await runcmd("bash run")
         asyncio.get_event_loop().create_task(userge.restart())
-=======
-        # push_to_heroku = True
-        # flags.remove("push")
->>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
     if len(flags) == 1:
         branch = flags[0]
     repo = Repo()
