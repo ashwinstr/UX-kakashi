@@ -59,15 +59,9 @@ async def see_info(message: Message):
     plugin_loc = ("/" + userge.manager.plugins[plugin_name].parent).replace(
         "/plugins", ""
     )
-<<<<<<< HEAD
-    if plugin_loc == "/unofficial":
-        unofficial_repo = (
-            "https://github.com/ashwinstr/Userge-Plugins/blob/master/plugins/"
-=======
     if plugin_loc == "/xtra":
         extra_plugins = (
             "https://github.com/code-rgb/Userge-Plugins/blob/master/plugins/"
->>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
         )
         plugin_link = f"{extra_plugins}/{plugin_name}.py"
     elif plugin_loc == "/custom":
