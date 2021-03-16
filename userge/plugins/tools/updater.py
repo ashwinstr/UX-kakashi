@@ -18,16 +18,16 @@ CHANNEL = userge.getCLogger(__name__)
         "header": "Check Updates or Update USERGE-X",
         "flags": {
             "-pull": "pull updates",
-            "-push": "push updates to heroku",
             "-branch": "Default is -alpha",
             "-pr": "Userge-Plugins repo updates",
             "-prp": "Userge-Plugins repo pull updates",
         },
-        "usage": "{tr}update : check updates from default branch\n"
-        "{tr}update -[branch_name] : check updates from any branch\n"
-        "add -pull if you want to pull updates\n"
-        "add -push if you want to push updates to heroku",
-        "examples": "{tr}update -pull -push",
+        "usage": (
+            "{tr}update : check updates from default branch\n"
+            "{tr}update -[branch_name] : check updates from any branch\n"
+            "add -pull if you want to pull updates\n"
+        ),
+        "examples": "{tr}update -pull",
     },
     del_pre=True,
     allow_channels=False,
@@ -35,6 +35,12 @@ CHANNEL = userge.getCLogger(__name__)
 async def check_update(message: Message):
     """ check or do updates """
     await message.edit("`Checking for updates, please wait....`")
+    if Config.HEROKU_ENV:
+        await message.edit(
+            "**Heroku App detected !**, Updates have been disabled for Safety.\n"
+            "Your Bot Will Auto Update when Heroku restart"
+        )
+        return
     flags = list(message.flags)
     pull_from_repo = False
     push_to_heroku = False
@@ -49,6 +55,7 @@ async def check_update(message: Message):
         if not Config.HEROKU_APP:
             await message.err("HEROKU APP : could not be found !")
             return
+<<<<<<< HEAD
         push_to_heroku = True
         flags.remove("push")
     if "pr" in flags:
@@ -58,6 +65,10 @@ async def check_update(message: Message):
         await message.edit("Updating <b><u>Userge-Plugins</u></b>...", log=__name__)
         await runcmd("bash run")
         asyncio.get_event_loop().create_task(userge.restart())
+=======
+        # push_to_heroku = True
+        # flags.remove("push")
+>>>>>>> 4f232ad9f48c5311870afb9f085fd5c913443c93
     if len(flags) == 1:
         branch = flags[0]
     repo = Repo()
