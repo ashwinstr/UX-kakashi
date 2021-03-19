@@ -8,8 +8,6 @@
 #
 # All rights reserved.
 
-. init/unofficial_repo_checks.sh
-
 _checkBashReq() {
     log "Checking Bash Commands ..."
     command -v jq &> /dev/null || quit "Required command : jq : could not be found !"
