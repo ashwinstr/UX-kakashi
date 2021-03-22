@@ -77,13 +77,8 @@ class Config:
     HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
     HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
     G_DRIVE_IS_TD = os.environ.get("G_DRIVE_IS_TD") == "true"
-<<<<<<< HEAD
     GENIUS = os.environ.get("GENIUS")
-    LOAD_UNOFFICIAL_PLUGINS = os.environ.get(
-        "LOAD_UNOFFICIAL_PLUGINS") == "true"
-=======
     LOAD_UNOFFICIAL_PLUGINS = os.environ.get("LOAD_UNOFFICIAL_PLUGINS") == "true"
->>>>>>> 8ce6bd1df218cca7ede46e2f07a64fe6631ecebb
     THUMB_PATH = DOWN_PATH + "thumb_image.jpg"
     TMP_PATH = "userge/plugins/temp/"
     MAX_MESSAGE_LENGTH = 4096
