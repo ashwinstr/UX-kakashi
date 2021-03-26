@@ -1,17 +1,11 @@
 # Creator @midnightmadwalk to be found on tg
 # on github as https://github.com/iMBadBoi
-<<<<<<< HEAD
 # i just improvised it a lil'...phew..
-=======
 # improved by @Lostb053
-# further improvement by @Kakashi_HTK/ashwinstr
+# further improvement by @Kakashi_HTK/@ashwinstr
 
-import time
-from json import dumps
->>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
 
 from google_trans_new import google_translator
-from googletrans import LANGUAGES, Translator
 
 from userge import Message, pool, userge
 from userge.plugins.utils.translate import _translate_this
@@ -54,31 +48,9 @@ async def romaji_(message: Message):
         await message.edit("`romanising...`")
         z = translator.detect(x)
         y = x.split("\n")
-<<<<<<< HEAD
-        result = translator.translate(y, lang_src=z, lang_tgt="en", pronounce=True)
-        k = result[1]
-        if k is None:
-            result = translator.translate(
-                y, lang_src="en", lang_tgt="ja", pronounce=True
-            )
-            k = result[2]
-        await message.reply(k.replace("', '", "\n").replace("['", "").replace("']", ""))
-=======
     result = translator.translate(y, lang_src=z, lang_tgt="en", pronounce=True)
     k = result[1]
     if k is None:
         result = translator.translate(y, lang_src="en", lang_tgt="ja", pronounce=True)
         k = result[2]
     await message.reply(k.replace("', '", "\n").replace("['", "").replace("']", ""))
-
-
-@pool.run_in_thread
-def _translate_this(x: str, dest: str, src: str):
-    for i in range(10):
-        try:
-            return Translator().translate(x, dest=dest, src=src)
-        except AttributeError:
-            if i == 9:
-                raise
-            time.sleep(0.3)
->>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
