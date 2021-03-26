@@ -34,7 +34,7 @@ class Colors:
 
 
 @userge.on_cmd(
-    "(?:gimg|img)",
+    "gimg",
     about={
         "header": "Google Image Downloader",
         "description": "Search and download images from google and upload to telegram",
@@ -71,7 +71,7 @@ async def gimg_down(message: Message):
         text = reply.text or reply.caption
 
     if not text:
-        await message.err("`Input not found!...`", del_in=5)
+        await message.err("`Input not found...`", del_in=5)
         return
     await message.edit("🔎")
     start_t = datetime.now()
@@ -99,7 +99,7 @@ async def gimg_down(message: Message):
     else:
         arguments = await get_arguments(query=text)
     media_type = "Gifs" if allow_gif else "Pics"
-    await message.edit(f"⬇️  Downloading  {limit} {media_type} ...")
+    await message.edit(f"⬇️  Downloading {limit} {media_type} ...")
     try:
         results = await gimg_downloader(arguments)
     except Exception as e:
@@ -108,14 +108,16 @@ async def gimg_down(message: Message):
     if upload_:
         await message.edit(f"⬆️  Uploading {limit} {media_type} ...")
         try:
-            await upload_image_grp(results, message, doc_)
+            gif = True if "gif" in flags_ else False
+            await upload_image_grp(results, message, gif, doc_)
         except Exception as err:
             await message.err(str(err), del_in=7)
         else:
+            type_ = "gif/s" if gif else "pic/s"
             end_t = datetime.now()
             time_taken_s = (end_t - start_t).seconds
             await message.edit(
-                f"Uploaded {limit} Pics in {time_taken_s} sec with {results[1]} errors.",
+                f"Uploaded {limit} {type_} in {time_taken_s} sec with {results[1]} errors.",
                 del_in=5,
                 log=__name__,
             )
@@ -181,7 +183,9 @@ def gimg_downloader(arguments):
     return path_
 
 
-async def upload_image_grp(results, message: Message, doc: bool = False):
+async def upload_image_grp(
+    results, message: Message, gif: bool = False, doc: bool = False
+):
     key_ = list(results[0])[0]
     medias_ = results[0][key_]
     if message.process_is_canceled:
@@ -197,12 +201,24 @@ async def upload_image_grp(results, message: Message, doc: bool = False):
     else:
         mgroups = sublists(
             [
-                (InputMediaDocument(media=x) if doc else InputMediaPhoto(media=x))
+                (InputMediaDocument(media=x) if (doc) else InputMediaPhoto(media=x))
                 for x in medias_
                 if x.endswith((".jpg", ".jpeg", ".png", ".bmp"))
             ],
             width=10,
         )
+        if "gif":
+            total = 0
+            for path_ in medias_:
+                total += 1
+                try:
+                    await message.edit(
+                        f"⬆️  Uploading **{round(total / len(medias_) * 100)} %** ..."
+                    )
+                    await userge.send_document(message.chat.id, path_)
+                    os.remove(path_)
+                except FloodWait as f:
+                    await asyncio.sleep(f.x + 5)
         for num, m_ in enumerate(mgroups, start=1):
             try:
                 await message.edit(

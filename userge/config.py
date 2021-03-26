@@ -56,6 +56,7 @@ class Config:
     UNFINISHED_PROGRESS_STR = os.environ.get("UNFINISHED_PROGRESS_STR")
     ALIVE_MEDIA = os.environ.get("ALIVE_MEDIA")
     CUSTOM_PACK_NAME = os.environ.get("CUSTOM_PACK_NAME")
+    CUSTOM_PLUGINS_REPO = os.environ.get("CUSTOM_PLUGINS_REPO")
     INSTA_ID = os.environ.get("INSTA_ID")
     INSTA_PASS = os.environ.get("INSTA_PASS")
     CUSTOM_PLUGINS_REPO = os.environ.get("CUSTOM_PLUGINS_REPO")
@@ -114,6 +115,7 @@ class Config:
     ALLOW_NSFW = os.environ.get("ALLOW_NSFW", "False")
     PM_LOG_GROUP_ID = int(os.environ.get("PM_LOG_GROUP_ID", 0))
     PM_LOGGING = False
+    TAG_LOGGING = False
     DEEP_AI = os.environ.get("DEEP_AI")
     LASTFM_USERNAME = os.environ.get("LASTFM_USERNAME")
     LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY")

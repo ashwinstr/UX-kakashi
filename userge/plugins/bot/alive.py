@@ -83,9 +83,10 @@ async def send_inline_alive(message: Message) -> None:
 
 async def send_alive_message(message: Message) -> None:
     global _USER_CACHED_MEDIA, _BOT_CACHED_MEDIA
+    me = await userge.get_me()
     chat_id = message.chat.id
     client = message.client
-    caption = Bot_Alive.alive_info()
+    caption = Bot_Alive.alive_info(me)
     if client.is_bot:
         reply_markup = Bot_Alive.alive_buttons()
         file_id = _BOT_CACHED_MEDIA
@@ -228,21 +229,28 @@ class Bot_Alive:
     @staticmethod
     def alive_info(me):
         u_name = " ".join([me.first_name, me.last_name or ""])
+<<<<<<< HEAD
         alive_info_ = f"""
 ­­<a href="https://telegram.dog/x_xtests"><b>USERGE-X</a> is Up and Running.</b>
 
   🐍   <b>Python :</b>    <code>v{versions.__python_version__}</code>
+=======
+        alive_info = f"""
+­<a href="https://telegram.dog/x_xtests"><b>𝐒𝐇𝐀𝐑𝐈𝐍𝐆𝐀𝐍</a> is on and working.</b>
+
+  🐍   <b>Python      :</b>    <code>v{versions.__python_version__}</code>
+>>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
   🔥   <b>Pyrogram :</b>    <code>v{versions.__pyro_version__}</code>
-  🧬   <b>𝑿 :</b>    <code>v{get_version()}</code>
-  👤   <b>User :</b>    <code>{u_name}</code>
-  <b>{Bot_Alive._get_mode()}</b>    <code>|</code>    🕔  <b>{userge.uptime}</b>
+  🧬   <b>𝑿                :</b>    <code>v{get_version()}</code>
+  👤   <b>User          :</b>    <code>{u_name}</code>
+  <b>{Bot_Alive._get_mode()}</b>        <code>|</code>    🕔  <b>{userge.uptime}</b>
 """
-        return alive_info_
+        return alive_info
 
     @staticmethod
     def _get_mode() -> str:
         if RawClient.DUAL_MODE:
-            return "↕️  DUAL"
+            return "↕️   DUAL"
         if Config.BOT_TOKEN:
             return "🤖  BOT"
         return "👤  USER"

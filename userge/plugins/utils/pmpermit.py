@@ -240,7 +240,15 @@ async def set_custom_blockpm_message(message: Message):
 )
 async def view_current_noPM_msg(message: Message):
     """ view current pm message """
-    await message.edit(f"--current PM message--\n\n{noPmMessage}")
+    reply = message.reply_to_message
+    if reply:
+        reply_to = reply.message_id
+    else:
+        reply_to = message.message_id
+    await message.edit(f"--Current PM message is as below--👇")
+    await userge.send_message(
+        message.chat.id, noPmMessage, reply_to_message_id=reply_to
+    )
 
 
 @userge.on_cmd(
@@ -250,7 +258,15 @@ async def view_current_noPM_msg(message: Message):
 )
 async def view_current_blockPM_msg(message: Message):
     """ view current block pm message """
-    await message.edit(f"--current blockPM message--\n\n{blocked_message}")
+    reply = message.reply_to_message
+    if reply:
+        reply_to = reply.message_id
+    else:
+        reply_to = message.message_id
+    await message.edit(f"--Current blockPM message is as below--👇")
+    await userge.send_message(
+        message.chat.id, blocked_message, reply_to_message_id=reply_to
+    )
 
 
 @userge.on_filters(
@@ -266,8 +282,10 @@ async def view_current_blockPM_msg(message: Message):
 )
 async def uninvitedPmHandler(message: Message):
     """ pm message handler """
+    me = await userge.get_me()
+    owner = " ".join([me.first_name, me.last_name or ""])
     user_dict = await userge.get_user_dict(message.from_user.id)
-    user_dict.update({"chat": message.chat.title or "this group"})
+    user_dict.update({"chat": message.chat.title or owner or "this group"})
     if message.from_user.is_verified:
         return
     if message.from_user.id in pmCounter:
