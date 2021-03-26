@@ -8,6 +8,7 @@
 from json import dumps
 
 from google_trans_new import google_translator
+from googletrans import LANGUAGES
 
 from userge import Message, userge
 from userge.plugins.utils.translate import _translate_this
