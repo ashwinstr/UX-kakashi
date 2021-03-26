@@ -229,17 +229,10 @@ class Bot_Alive:
     @staticmethod
     def alive_info(me):
         u_name = " ".join([me.first_name, me.last_name or ""])
-<<<<<<< HEAD
-        alive_info_ = f"""
-­­<a href="https://telegram.dog/x_xtests"><b>USERGE-X</a> is Up and Running.</b>
-
-  🐍   <b>Python :</b>    <code>v{versions.__python_version__}</code>
-=======
         alive_info = f"""
 ­<a href="https://telegram.dog/x_xtests"><b>𝐒𝐇𝐀𝐑𝐈𝐍𝐆𝐀𝐍</a> is on and working.</b>
 
   🐍   <b>Python      :</b>    <code>v{versions.__python_version__}</code>
->>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
   🔥   <b>Pyrogram :</b>    <code>v{versions.__pyro_version__}</code>
   🧬   <b>𝑿                :</b>    <code>v{get_version()}</code>
   👤   <b>User          :</b>    <code>{u_name}</code>
