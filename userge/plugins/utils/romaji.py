@@ -7,7 +7,7 @@
 
 from google_trans_new import google_translator
 
-from userge import Message, pool, userge
+from userge import Message, userge
 from userge.plugins.utils.translate import _translate_this
 
 translator = google_translator()
