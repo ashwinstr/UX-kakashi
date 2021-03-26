@@ -12,16 +12,6 @@ LOG = userge.getLogger(__name__)
 CHANNEL = userge.getCLogger(__name__)
 
 
-async def _init():
-    start = userge.uptime
-<<<<<<< HEAD
-    if start == "1s":
-=======
-    if start == "0h, 0m, 1s":
->>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
-        await CHANNEL.log("Bot started...")
-
-
 @userge.on_cmd(
     "update",
     about={
@@ -65,13 +55,8 @@ async def check_update(message: Message):
         if not Config.HEROKU_APP:
             await message.err("HEROKU APP : could not be found !")
             return
-<<<<<<< HEAD
-    # push_to_heroku = True
-    # flags.remove("push")
-=======
         # push_to_heroku = True
         # flags.remove("push")
->>>>>>> f3b2bca321e024dea631aee11dc350e85ded82f6
     if "pr" in flags:
         branch = "master"
         out = _get_updates_pr(git_u_n, branch)
