@@ -58,9 +58,6 @@ async def romaji_(message: Message):
     if k is None:
         result = translator.translate(y, lang_src="en", lang_tgt="ja", pronounce=True)
         k = result[2]
-<<<<<<< HEAD
-    await message.reply(k.replace("', '", "\n").replace("['", "").replace("']", ""))
-=======
     lang = LANGUAGES[f"{tran.dest.lower()}"]
     out = f"Transcribed to <b>{lang.title()}</b>:\n"
     rom = (
@@ -76,4 +73,3 @@ async def romaji_(message: Message):
         await userge.send_message(message.chat.id, out, reply_to_message_id=replied)
     else:
         await message.edit(out)
->>>>>>> 6b4356f91ecfb6ad9f594c16b8c16722ed087efe
