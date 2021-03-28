@@ -608,16 +608,17 @@ async def pin_msgs(message: Message):
             disable_notification=(not bool("-l" in message.flags)),
             both_sides=(bool("-both" in message.flags)),
         )
-        silent = False if "-l" or "-both" in message.flags else True
+        silent = False if ("-l" or "-both") in message.flags else True
         await message.edit(f"`Pinned Successfully!`\nSilent: {silent}")
         if message.chat.type in ["group", "supergroup"]:
+            chat_id = message.chat.id
             await CHANNEL.log(f"#PIN\n\nCHAT: `{message.chat.title}` (`{chat_id}`)")
         else:
             await CHANNEL.log(
                 f"#PIN\n\nCHAT: `{message.from_user.first_name}` (`{message.from_user.id}`)"
             )
     except Exception as e_f:
-        await message.err(e_f + "\ndo .help pin for more info ...", del_in=7)
+        await message.err(f"{e_f}\ndo .help pin for more info ...", del_in=7)
 
 
 @userge.on_cmd(

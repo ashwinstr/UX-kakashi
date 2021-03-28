@@ -30,8 +30,10 @@ translator = google_translator()
 )
 async def romaji_(message: Message):
     x = message.filtered_input_str
-    if message.reply_to_message:
+    reply = message.reply_to_message
+    if reply:
         x = message.reply_to_message.text or message.reply_to_message.caption
+        replied = reply.message_id
     if not x:
         await message.edit("`No input found...`")
         return
@@ -44,11 +46,11 @@ async def romaji_(message: Message):
             return
         if len(flags) == 1:
             tran = await _translate_this(x, flag, "auto")
-            await message.edit("`romanising...`")
+            await message.edit("`Transcribing...`")
             z = translator.detect(tran.text)
             y = (tran.text).split("\n")
     else:
-        await message.edit("`romanising...`")
+        await message.edit("`Transcribing...`")
         z = translator.detect(x)
         y = x.split("\n")
     result = translator.translate(y, lang_src=z, lang_tgt="en", pronounce=True)
@@ -56,4 +58,22 @@ async def romaji_(message: Message):
     if k is None:
         result = translator.translate(y, lang_src="en", lang_tgt="ja", pronounce=True)
         k = result[2]
+<<<<<<< HEAD
     await message.reply(k.replace("', '", "\n").replace("['", "").replace("']", ""))
+=======
+    lang = LANGUAGES[f"{tran.dest.lower()}"]
+    out = f"Transcribed to <b>{lang.title()}</b>:\n"
+    rom = (
+        k.replace("', '", "\n")
+        .replace("['", "")
+        .replace("']", "")
+        .replace("[", "")
+        .replace("]", ".")
+    )
+    out += f"`{rom}`"
+    if reply:
+        await message.delete()
+        await userge.send_message(message.chat.id, out, reply_to_message_id=replied)
+    else:
+        await message.edit(out)
+>>>>>>> 6b4356f91ecfb6ad9f594c16b8c16722ed087efe
