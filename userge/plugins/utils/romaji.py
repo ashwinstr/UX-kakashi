@@ -21,6 +21,7 @@ translator = google_translator()
     about={
         "header": "Romaji Converter",
         "supported languages": dumps(LANGUAGES, indent=4, sort_keys=True),
+        "flags": {"-s": "transcribe secretly"},
         "usage": "[reply to message or text after cmd]",
         "examples": "for other language to latin\n"
         "{tr}rom こんばんは　or　{tr}rom [reply to msg]\n\n"
@@ -39,18 +40,22 @@ async def romaji_(message: Message):
         return
     flags = message.flags
     if flags:
-        flag = list(flags)[0]
+        if "-s" in flags:
+            flag = list(flags)[1]
+        else:
+            flag = list(flags)[0]
         flag = flag.replace("-", "")
-        if len(flags) > 1:
-            await message.edit("`Only one flag please...`")
+        if len(flags) > 1 and "-s" not in flags:
+            await message.edit("`Only one language flag supported...`")
             return
-        if len(flags) == 1:
-            tran = await _translate_this(x, flag, "auto")
+        tran = await _translate_this(x, flag, "auto")
+        if "-s" not in flags:
             await message.edit("`Transcribing...`")
-            z = translator.detect(tran.text)
-            y = (tran.text).split("\n")
+        z = translator.detect(tran.text)
+        y = (tran.text).split("\n")
     else:
-        await message.edit("`Transcribing...`")
+        if "-s" not in flags:
+            await message.edit("`Transcribing...`")
         z = translator.detect(x)
         y = x.split("\n")
     result = translator.translate(y, lang_src=z, lang_tgt="en", pronounce=True)
@@ -59,14 +64,17 @@ async def romaji_(message: Message):
         result = translator.translate(y, lang_src="en", lang_tgt="ja", pronounce=True)
         k = result[2]
     lang = LANGUAGES[f"{tran.dest.lower()}"]
-    out = f"Transcribed to <b>{lang.title()}</b>:\n"
+    out = ""
+    if "-s" not in flags:
+        out += f"Transcribed to <b>{lang.title()}</b>:\n"
     rom = (
         k.replace("', '", "\n")
         .replace("['", "")
         .replace("']", "")
         .replace("[", "")
-        .replace("]", ".")
+        .replace("]", "")
     )
+    rom = rom.strip()
     out += f"`{rom}`"
     if reply:
         await message.delete()
