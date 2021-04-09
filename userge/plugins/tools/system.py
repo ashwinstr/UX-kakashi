@@ -9,9 +9,11 @@
 
 
 import asyncio
+import os
 import shutil
 import time
 
+from dotenv import get_key, load_dotenv, set_key, unset_key
 from pyrogram.types import User
 
 from userge import Config, Message, get_collection, userge
@@ -153,90 +155,155 @@ async def die_(message: Message) -> None:
 @userge.on_cmd(
     "setvar",
     about={
-        "header": "set var in heroku",
+        "header": "set var",
         "usage": "{tr}setvar [var_name] [var_data]",
         "examples": "{tr}setvar WORKERS 4",
     },
 )
 async def setvar_(message: Message) -> None:
-    """ set var (heroku) """
+    """ set var """
+    heroku = True
     if not Config.HEROKU_APP:
-        await message.err("`heroku app not detected !`")
-        return
+        heroku = False
+        if os.path.exists("config.env"):
+            pass
+        else:
+            await message.err("`Heroku app and config.env both not detected...`")
+            return
     if not message.input_str:
-        await message.err("`input needed !`")
+        await message.err("`Input not found...`")
         return
-    var_name, var_data = message.input_str.split(maxsplit=1)
-    if not var_data:
-        await message.err("`var data needed !`")
+    var_key, var_value = message.input_str.split(maxsplit=1)
+    if not var_value:
+        await message.err("`Var value not found...`")
         return
-    var_name = var_name.strip()
-    var_data = var_data.strip()
-    heroku_vars = Config.HEROKU_APP.config()
-    if var_name in heroku_vars:
-        await CHANNEL.log(f"#HEROKU_VAR #SET #UPDATED\n\n`{var_name}` = `{var_data}`")
-        await message.edit(
-            f"`var {var_name} updated and forwarded to log channel !`", del_in=3
-        )
+    var_key = var_key.strip()
+    var_value = var_value.strip()
+    if heroku:
+        heroku_vars = Config.HEROKU_APP.config()
+        if var_key in heroku_vars:
+            await CHANNEL.log(
+                f"#HEROKU_VAR #SET #UPDATED\n\n`{var_key}` = `{var_value}`"
+            )
+            await message.edit(
+                f"`Var {var_key} updated and forwarded to log channel...`", del_in=3
+            )
+        else:
+            await CHANNEL.log(f"#HEROKU_VAR #SET #ADDED\n\n`{var_key}` = `{var_value}`")
+            await message.edit(
+                f"`Var {var_key} added and forwarded to log channel...`", del_in=3
+            )
+        heroku_vars[var_key] = var_value
     else:
-        await CHANNEL.log(f"#HEROKU_VAR #SET #ADDED\n\n`{var_name}` = `{var_data}`")
-        await message.edit(
-            f"`var {var_name} added and forwarded to log channel !`", del_in=3
-        )
-    heroku_vars[var_name] = var_data
+        file = "config.env"
+        get = get_key(file, var_key)
+        if get is not None:
+            await message.edit(
+                f"Var {var_key} updated and forwarded to log channel...", del_in=3
+            )
+            await CHANNEL.log(f"#CONFIG_VAR #UPDATED\n\n`{var_key} = {var_value}`")
+        else:
+            await message.edit(
+                f"Var {var_key} added and forwarded to log channel...", del_in=3
+            )
+            await CHANNEL.log(f"#CONFIG_VAR #ADDED\n\n`{var_key} = {var_value}`")
+        set_key(file, var_key, var_value)
+        load_dotenv(file, override=True)
 
 
 @userge.on_cmd(
     "delvar",
     about={
-        "header": "del var in heroku",
+        "header": "del var",
         "usage": "{tr}delvar [var_name]",
         "examples": "{tr}delvar WORKERS",
     },
 )
 async def delvar_(message: Message) -> None:
-    """ del var (heroku) """
+    """ del var """
+    heroku = True
     if not Config.HEROKU_APP:
-        await message.err("`heroku app not detected !`")
-        return
+        heroku = False
+        if os.path.exists("config.env"):
+            pass
+        else:
+            await message.err("`Heroku app and config.env both not detected...`")
+            return
     if not message.input_str:
-        await message.err("`var name needed !`")
+        await message.err("`Input not found...`")
         return
-    var_name = message.input_str.strip()
-    heroku_vars = Config.HEROKU_APP.config()
-    if var_name not in heroku_vars:
-        await message.err(f"`var {var_name} not found !`")
-        return
-    await CHANNEL.log(f"#HEROKU_VAR #DEL\n\n`{var_name}` = `{heroku_vars[var_name]}`")
-    await message.edit(
-        f"`var {var_name} deleted and forwarded to log channel !`", del_in=3
-    )
-    del heroku_vars[var_name]
+    var_key = message.input_str
+    var_key = var_key.strip()
+    if heroku:
+        heroku_vars = Config.HEROKU_APP.config()
+        if var_key in heroku_vars:
+            await CHANNEL.log(f"#HEROKU_VAR #DELETED\n\n`{var_key}`")
+            await message.edit(
+                f"`Var {var_key} deleted and forwarded to log channel...`", del_in=3
+            )
+        else:
+            await message.edit(f"`Var {var_key} doesn't exist...`", del_in=3)
+            return
+        del heroku_vars[var_key]
+    else:
+        file = "config.env"
+        get = get_key(file, var_key)
+        if get is not None:
+            await message.edit(
+                f"Var {var_key} deleted and forwarded to log channel...", del_in=3
+            )
+            await CHANNEL.log(f"#CONFIG_VAR #DELETED\n\n`{var_key}`")
+        else:
+            await message.edit(f"`Var {var_key} doesn't exist...`", del_in=3)
+            return
+        unset_key(file, var_key)
+        load_dotenv(file, override=True)
 
 
 @userge.on_cmd(
     "getvar",
     about={
-        "header": "get var in heroku",
+        "header": "get var",
         "usage": "{tr}getvar [var_name]",
         "examples": "{tr}getvar WORKERS",
     },
 )
 async def getvar_(message: Message) -> None:
-    """ get var (heroku) """
+    """ get var """
+    heroku = True
     if not Config.HEROKU_APP:
-        await message.err("`heroku app not detected !`")
-        return
+        heroku = False
+        if os.path.exists("config.env"):
+            pass
+        else:
+            await message.err("`Heroku app and config.env both not detected...`")
+            return
     if not message.input_str:
-        await message.err("`var name needed !`")
+        await message.err("`Input not found...`")
         return
-    var_name = message.input_str.strip()
-    heroku_vars = Config.HEROKU_APP.config()
-    if var_name not in heroku_vars:
-        await message.err(f"`var {var_name} not found !`")
-        return
-    await CHANNEL.log(f"#HEROKU_VAR #GET\n\n`{var_name}` = `{heroku_vars[var_name]}`")
-    await message.edit(f"`var {var_name} forwarded to log channel !`", del_in=3)
+    var_key = message.input_str
+    var_key = var_key.strip()
+    if heroku:
+        heroku_vars = Config.HEROKU_APP.config()
+        if var_key in heroku_vars:
+            await CHANNEL.log(
+                f"#HEROKU_VAR #GET\n\n`{var_key}` = `{heroku_vars[var_name]}`"
+            )
+            await message.edit(f"`Var {var_key} forwarded to log channel...`", del_in=3)
+        else:
+            await message.edit(f"`Var {var_key} doesn't exist...`", del_in=3)
+            return
+    else:
+        file = "config.env"
+        get = get_key(file, var_key)
+        if get is not None:
+            await message.edit(
+                f"Var {var_key} value forwarded to log channel...", del_in=3
+            )
+            await CHANNEL.log(f"#CONFIG_VAR #GET\n\n`{var_key} = {get}`")
+        else:
+            await message.edit(f"`Var {var_key} doesn't exist...`", del_in=3)
+            return
 
 
 @userge.on_cmd(
