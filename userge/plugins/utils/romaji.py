@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-# Creator @midnightmadwalk to be found on tg
-# on github as https://github.com/iMBadBoi
-# i just improvised it a lil'...phew..
-# improved by @Lostb053
-# further improvement by @Kakashi_HTK/@ashwinstr
-
-=======
 # Creator @midnightmadwalk to be found on tg and https://github.com/midnightmadwalk on github
 # improved by @Lostb053
 # further improvement by @Kakashi_HTK/@ashwinstr
->>>>>>> 63bedfc47f39bc8783e3e68533fecb5295ef4704
+
 
 from json import dumps
 
